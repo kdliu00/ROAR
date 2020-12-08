@@ -35,7 +35,7 @@ class PurePursuitAgent(Agent):
     def run_step(self, sensors_data: SensorsData,
                  vehicle: Vehicle) -> VehicleControl:
         super(PurePursuitAgent, self).run_step(sensors_data=sensors_data,
-                                               vehicle=vehicle)
+                                               vehicle=vehicle, carla_control=carla_control)
         vehicle_control = self.local_planner.run_in_series()
 
         return vehicle_control

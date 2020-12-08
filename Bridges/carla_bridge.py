@@ -108,15 +108,15 @@ class CarlaBridge(Bridge):
             front_rgb=self.convert_rgb_from_source_to_agent(
                 source=source.get("front_rgb", None)
             ),
-            rear_rgb=self.convert_rgb_from_source_to_agent(
-                source=source.get("rear_rgb", None)
-            ),
+            # rear_rgb=self.convert_rgb_from_source_to_agent(
+            #     source=source.get("rear_rgb", None)
+            # ),
             front_depth=self.convert_depth_from_source_to_agent(
                 source=source.get("front_depth", None)
             ),
-            imu_data=self.convert_imu_from_source_to_agent(
-                source=source.get("imu", None)
-            ),
+            # imu_data=self.convert_imu_from_source_to_agent(
+            #     source=source.get("imu", None)
+            # ),
         )
 
     def convert_vehicle_from_source_to_agent(self, source: carla.Vehicle) -> Vehicle:

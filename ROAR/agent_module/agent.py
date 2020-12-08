@@ -50,6 +50,8 @@ class Agent(ABC):
             self.output_folder_path / "front_rgb"
         self.rear_rgb_camera_output_folder_path = \
             self.output_folder_path / "rear_rgb"
+        self.control_output_folder_path = \
+            self.output_folder_path / "control"
         self.should_save_sensor_data = self.agent_settings.save_sensor_data
         self.transform_output_folder_path = self.output_folder_path / "transform"
 
@@ -70,10 +72,11 @@ class Agent(ABC):
                                                              exist_ok=True)
             self.front_rgb_camera_output_folder_path.mkdir(parents=True,
                                                            exist_ok=True)
-            self.rear_rgb_camera_output_folder_path.mkdir(parents=True,
-                                                          exist_ok=True)
-            self.transform_output_folder_path.mkdir(parents=True,
-                                                    exist_ok=True)
+            # self.rear_rgb_camera_output_folder_path.mkdir(parents=True,
+            #                                               exist_ok=True)
+            # self.transform_output_folder_path.mkdir(parents=True,
+            #                                         exist_ok=True)
+            self.control_output_folder_path.mkdir(parents=True, exist_ok=True)
 
     def add_threaded_module(self, module: Module):
         if module.threaded:
@@ -154,15 +157,15 @@ class Agent(ABC):
                 else None
             )
 
-        if self.rear_rgb_camera is not None:
-            self.rear_rgb_camera.data = (
-                sensors_data.rear_rgb.data
-                if sensors_data.rear_rgb is not None
-                else None
-            )
+        # if self.rear_rgb_camera is not None:
+        #     self.rear_rgb_camera.data = (
+        #         sensors_data.rear_rgb.data
+        #         if sensors_data.rear_rgb is not None
+        #         else None
+        #     )
 
-        if self.imu is not None:
-            self.imu = sensors_data.imu_data
+        # if self.imu is not None:
+        #     self.imu = sensors_data.imu_data
 
     def save_sensor_data(self) -> None:
         """
@@ -172,38 +175,41 @@ class Agent(ABC):
         Returns:
             None
         """
-        try:
-            if self.front_rgb_camera is not None and self.front_rgb_camera.data is not None:
-                cv2.imwrite((self.front_rgb_camera_output_folder_path /
-                             f"frame_{self.time_counter}.png").as_posix(),
-                            self.front_rgb_camera.data)
-        except Exception as e:
-            self.logger.error(
-                f"Failed to save at Frame {self.time_counter}. Error: {e}")
+        if self.time_counter % 10 == 0:
+            try:
+                if self.front_rgb_camera is not None and self.front_rgb_camera.data is not None:
+                    cv2.imwrite((self.front_rgb_camera_output_folder_path /
+                                f"frame_{self.time_counter/10}.png").as_posix(),
+                                self.front_rgb_camera.data)
+            except Exception as e:
+                self.logger.error(
+                    f"Failed to save at Frame {self.time_counter}. Error: {e}")
 
-        try:
-            if self.front_rgb_camera is not None and self.front_rgb_camera.data is not None:
-                np.save((self.front_depth_camera_output_folder_path /
-                         f"frame_{self.time_counter}").as_posix(),
-                        self.front_depth_camera.data)
-        except Exception as e:
-            self.logger.error(
-                f"Failed to save at Frame {self.time_counter}. Error: {e}")
-        try:
-            if self.rear_rgb_camera is not None and self.rear_rgb_camera.data is not None:
-                cv2.imwrite((self.rear_rgb_camera_output_folder_path /
-                             f"frame_{self.time_counter}.png").as_posix(),
-                            self.rear_rgb_camera.data)
-        except Exception as e:
-            self.logger.error(
-                f"Failed to save at Frame {self.time_counter}. Error: {e}")
-        try:
-            transform_file = (Path(self.transform_output_folder_path) / f"frame_{self.time_counter}.txt").open('w')
-            transform_file.write(self.vehicle.transform.record())
-            transform_file.close()
-        except Exception as e:
-            self.logger.error(
-                f"Failed to save at Frame {self.time_counter}. Error: {e}")
+            try:
+                if self.front_rgb_camera is not None and self.front_rgb_camera.data is not None:
+                    np.save((self.front_depth_camera_output_folder_path /
+                            f"frame_{self.time_counter}").as_posix(),
+                            self.front_depth_camera.data)
+            except Exception as e:
+                self.logger.error(
+                    f"Failed to save at Frame {self.time_counter/10}. Error: {e}")
+
+        # try:
+        #     if self.rear_rgb_camera is not None and self.rear_rgb_camera.data is not None:
+        #         cv2.imwrite((self.rear_rgb_camera_output_folder_path /
+        #                      f"frame_{self.time_counter}.png").as_posix(),
+        #                     self.rear_rgb_camera.data)
+        # except Exception as e:
+        #     self.logger.error(
+        #         f"Failed to save at Frame {self.time_counter}. Error: {e}")
+
+        # try:
+        #     transform_file = (Path(self.transform_output_folder_path) / f"frame_{self.time_counter}.txt").open('w')
+        #     transform_file.write(self.vehicle.transform.record())
+        #     transform_file.close()
+        # except Exception as e:
+        #     self.logger.error(
+        #         f"Failed to save at Frame {self.time_counter}. Error: {e}")
 
 
     def start_module_threads(self):
