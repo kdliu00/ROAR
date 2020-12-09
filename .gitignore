@@ -134,8 +134,5 @@ LinuxNoEditor
 WindowsNoEditor
 
 data
-output
-archive
+sequential
 *.h5
-
-sequential/variables/
