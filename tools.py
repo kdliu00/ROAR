@@ -35,11 +35,10 @@ def prepare_data():
         X_train.append(cv_image)
 
         control_frame_path = image_path.replace(
-            ".png", ".txt").replace("front_rgb/", "control/")
+            ".png", ".txt").replace("front_rgb/", "control/").replace("_", "")
         with open(control_frame_path) as f:
             control_frame = json.load(f)
-            y_train.append([control_frame["throttle"],
-                            control_frame["steering"]])
+            y_train.append([control_frame["steering"]])
             if control_frame["steering"] == 0:
                 y_train_steer.append([0])
             else:

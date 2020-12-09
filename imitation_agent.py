@@ -13,23 +13,31 @@ import numpy as np
 
 
 class ImitationAgent(Agent):
-    def __init__(self, model, **kwargs):
+    def __init__(self, model, steer_model, **kwargs):
         super().__init__(**kwargs)
         self.model = model
+        self.steer_model = steer_model
 
     def run_step(self, vehicle: Vehicle,
                  sensors_data: SensorsData) -> VehicleControl:
         super(ImitationAgent, self).run_step(vehicle=vehicle,
                                              sensors_data=sensors_data)
         image = sensors_data.front_rgb.data
-        cv_image = cv2.resize(image, (80, 60),
-                              interpolation=cv2.INTER_LANCZOS4)
+        input_image = np.array([cv2.resize(image, (160, 120),
+                                           interpolation=cv2.INTER_LANCZOS4)])
 
-        output = self.model.predict(np.array([cv_image]), batch_size=None)
+        output = self.model.predict(input_image, batch_size=None)
+        steer_output = self.steer_model.predict(input_image, batch_size=None)
 
         control = VehicleControl()
-        control.throttle = output[0][0].item()
-        control.steering = output[0][1].item()
+        control.throttle = 0.7
+
+        if round(steer_output[0][0].item()) == 0:
+            print("Not steering")
+            control.steering = 0.0
+        else:
+            print("Steering")
+            control.steering = output[0][0].item()
 
         print(f"Control: {control}\n")
 
