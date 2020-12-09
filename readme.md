@@ -18,6 +18,9 @@ The main challenge was sparsity of data and lack of fine vehicle control. Most s
 
 Improvements that could be made include diversified environments, finer vehicle control in the form of virtual/physical steering wheel, more training data, and using more inputs such as the depth field camera and past control outputs. The last of these was not implemented due to computational limitations as the training was done on my local device.
 
-In my testing, the final model was only able to complete the first turn.
+In my testing, the final model was only able to complete the first turn. The link to the model weights are below. Download and place them in the root folder (same folder as this readme).
+
+ImiCarla model weights: https://drive.google.com/file/d/1yS0gSI2Nksk9U8TcfIvS4ZbpJ5_zAzOE/view?usp=sharing
+ImiSteer model weights: https://drive.google.com/file/d/1yDc_5nH9vvW10Dweov6ll-KnkHoXbfuV/view?usp=sharing
 
 The models were trained on CUDA 10.1 and CuDNN 7.6 on an RTX 2060 Super. The backend is Tensorflow 2.3, specifically the gpu version. The module requirements are specified in the requirements.txt file.
